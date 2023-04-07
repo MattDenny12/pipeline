@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'java-library'
+    id 'maven-publish'
 }
 
 compileJava {
@@ -31,4 +32,22 @@ test {
 
 wrapper {
     gradleVersion = '7.5.1'
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/mattdenny12/pipeline")
+            credentials {
+                username = project.findProperty("gprUser") ?: System.getenv("GITHUB_USER")
+                password = project.findProperty("gprKey") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
 }
