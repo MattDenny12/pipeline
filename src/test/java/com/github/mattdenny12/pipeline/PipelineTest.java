@@ -4,10 +4,8 @@ import com.github.mattdenny12.pipeline.exception.PipelineException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 public class PipelineTest {
@@ -113,6 +111,21 @@ public class PipelineTest {
         Assertions.assertEquals(3, output.object());
         Assertions.assertTrue(output.proceed());
         Assertions.assertTrue(output.exceptions().isEmpty());
+    }
+
+    @Test
+    public void testExceptionCallback() {
+        AtomicReference<Boolean> callbackCalled = new AtomicReference<>(false);
+
+        Pipeline pipeline = new Pipeline()
+                .exceptionCallback(exchange -> {
+                    callbackCalled.set(true);
+                    return exchange;
+                })
+                .pipes(Arrays.asList(successfulPipe, failingPipe));
+
+        Assertions.assertThrows(PipelineException.class, () -> pipeline.run(0));
+        Assertions.assertTrue(callbackCalled.get());
     }
 
     @Test

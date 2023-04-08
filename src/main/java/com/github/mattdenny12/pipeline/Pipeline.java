@@ -30,6 +30,11 @@ public class Pipeline {
     protected Collection<Function<Exchange, Exchange>> pipes = new ArrayList<>();
 
     /**
+     * The function that will be called in the event of an exception.
+     */
+    protected Function<Exchange, Exchange> exceptionCallback = exchange -> exchange;
+
+    /**
      * @param newPipe The new pipe to be added to the end of the pipeline.
      * @return The resulting pipeline.
      */
@@ -93,6 +98,8 @@ public class Pipeline {
                 .build();
 
         exchange.exceptions().add(pipelineException);
+
+        exceptionCallback.apply(exchange);
 
         if (bubbleExceptions) {
             throw pipelineException;
