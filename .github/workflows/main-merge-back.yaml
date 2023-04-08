@@ -8,7 +8,7 @@ on:
 permissions: write-all
 
 jobs:
-  create-merge-back-pr:
+  createMergeBackPr:
     runs-on: ubuntu-latest
     steps:
       - name: Create Pull Request
