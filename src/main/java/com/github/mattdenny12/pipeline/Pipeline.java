@@ -74,15 +74,8 @@ public class Pipeline {
         for (Function<Exchange, Exchange> pipe : pipes) {
             try {
                 exchange = pipe.apply(exchange);
-            } catch (Exception e) {
-                PipelineException pipelineException = PipelineException.builder()
-                        .message(String.format("An error occurred when processing pipe %s: %s", pipe, e.getMessage()))
-                        .cause(e)
-                        .exchange(exchange)
-                        .brokenPipe(pipe)
-                        .build();
-
-                handleException(pipelineException, exchange);
+            } catch (Exception exception) {
+                handleException(exception, pipe, exchange);
             }
 
             if (!exchange.proceed()) break;
@@ -91,7 +84,14 @@ public class Pipeline {
         return exchange;
     }
 
-    private void handleException(PipelineException pipelineException, Exchange exchange) {
+    private void handleException(Exception exception, Function<Exchange, Exchange> pipe, Exchange exchange) {
+        PipelineException pipelineException = PipelineException.builder()
+                .message(String.format("An error occurred when processing pipe %s: %s", pipe, exception.getMessage()))
+                .cause(exception)
+                .exchange(exchange)
+                .brokenPipe(pipe)
+                .build();
+
         exchange.exceptions().add(pipelineException);
 
         if (bubbleExceptions) {
