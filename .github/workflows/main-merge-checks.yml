@@ -1,0 +1,38 @@
+name: Main Merge Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions: read-all
+
+jobs:
+  checkTag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Pull Version From Gradle
+        run: |
+          echo "TAG_NAME=`gradle properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}'`" >> $GITHUB_ENV
+      - name: Check Tag
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { TAG_NAME } = process.env;
+            let response = undefined;
+
+            try {
+              response = await github.rest.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/tags/v${TAG_NAME}`
+              });
+            } catch (err) {
+              console.log(`Received the following error: ${err}`);
+            }
+            
+            if (response != undefined && response.status <= 299) {
+              throw "Tag already found. Please update version."
+            }
