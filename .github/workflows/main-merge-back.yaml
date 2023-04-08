@@ -1,0 +1,31 @@
+name: Main Merge Back
+
+on:
+  push:
+    branches:
+      - main
+
+permissions: write-all
+
+jobs:
+  createMergeBackPr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Pull Request
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const result = await github.rest.pulls.create({
+              title: 'Automatic Merge Back',
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: 'main',
+              base: 'develop',
+              body: 'This PR was auto generated using the `main-merge-back.yaml` workflow'
+            });
+            github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: result.data.number,
+              labels: ['merge back', 'automated']
+            });
