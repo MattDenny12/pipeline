@@ -27,7 +27,7 @@ jobs:
               response = await github.rest.git.getRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                ref: `refs/tags/v${TAG_NAME}`
+                ref: `tags/v${TAG_NAME}`
               });
             } catch (err) {
               console.log(`Received the following error: ${err}`);
