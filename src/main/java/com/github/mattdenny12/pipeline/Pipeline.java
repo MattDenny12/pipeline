@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class Pipeline {
 
     /**
-     * Whether exceptions should bubble up. That is, if an exception occurs, and {@code bubbleExceptions} is
+     * Test Whether exceptions should bubble up. That is, if an exception occurs, and {@code bubbleExceptions} is
      * {@code true}, then any exceptions that occur during the execution of the pipeline will be thrown. Inversely, if
      * {@code bubbleExceptions} is false, then exceptions will not be thrown and will instead be added to the exchange.
      */
