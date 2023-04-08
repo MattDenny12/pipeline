@@ -11,6 +11,7 @@ import java.util.Collection;
 @Getter
 @Setter
 public class Exchange {
+    /* some docs */
     protected boolean proceed = true;
     protected Object object = null;
     protected Collection<Exception> exceptions = new ArrayList<>();
