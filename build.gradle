@@ -10,7 +10,7 @@ compileJava {
 }
 
 group 'com.github.mattdenny12'
-version '1.0.0'
+version '1.0.0.hotfix.1'
 
 repositories {
     mavenCentral()
